@@ -63,13 +63,13 @@
     </div>
 
     <script>
-        // --- ТВОИ ДАННЫЕ ДЛЯ GITHUB ---
+        // --- ТВОИ ДАННЫЕ ---
         const MASTER_HASH = "$2b$10$cilpR5lO.eDrP8QQgqHlquz5Tr06oNMUI4kFVRtQG/KnSu8p6cF4O";
         const GITHUB_USER = "gagarinw"; 
         
-        // ВСТАВЬ СЮДА НАЗВАНИЕ РЕПОЗИТОРИЯ И ТОКЕН:
-        const REPO_NAME = "НАЗВАНИЕ_ТВОЕГО_РЕПОЗИТОРИЯ"; 
-        const GITHUB_TOKEN = "ТВОЙ_ТОКЕН_ghp_...";
+        // !!! ВАЖНО: УДАЛИ РУССКИЙ ТЕКСТ И ВСТАВЬ СВОИ ДАННЫЕ МЕЖДУ КАВЫЧЕК !!!
+        const REPO_NAME = "ВСТАВЬ_СЮДА_НАЗВАНИЕ_РЕПОЗИТОРИЯ"; 
+        const GITHUB_TOKEN = "ВСТАВЬ_СЮДА_СВОЙ_ТОКЕН_ghp";
         // ------------------------------
 
         function setStatus(msg, type) {
@@ -86,8 +86,8 @@
         }
 
         async function generateKey(type) {
-            if (!REPO_NAME || REPO_NAME === "НАЗВАНИЕ_ТВОЕГО_РЕПОЗИТОРИЯ" || !GITHUB_TOKEN || GITHUB_TOKEN.includes("ТВОЙ_ТОКЕН")) {
-                setStatus("❌ Ошибка: Укажи токен и репозиторий в коде (строки 57-58)!", "error");
+            if (!REPO_NAME || REPO_NAME.includes("ВСТАВЬ_СЮДА") || !GITHUB_TOKEN || GITHUB_TOKEN.includes("ВСТАВЬ_СЮДА")) {
+                setStatus("❌ Ошибка: Ты забыл вписать свой токен и репозиторий в код (строки 57-58)!", "error");
                 return;
             }
 
