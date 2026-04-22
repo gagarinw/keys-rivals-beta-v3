@@ -14,221 +14,176 @@
             background-color: #0b0f19;
             background-image: radial-gradient(circle at 50% 0%, #1a2342 0%, #0b0f19 70%);
             color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow-y: auto; padding: 20px;
         }
 
         .container {
-            background: rgba(20, 25, 40, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 100, 255, 0.3);
-            border-radius: 20px;
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
+            background: rgba(20, 25, 40, 0.6); backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 100, 255, 0.3); border-radius: 20px;
+            padding: 40px; width: 100%; max-width: 500px;
             box-shadow: 0 0 40px rgba(0, 100, 255, 0.15);
-            text-align: center;
-            position: relative;
+            text-align: center; position: relative;
         }
 
-        h1 {
-            font-size: 24px;
-            font-weight: 900;
-            margin-bottom: 5px;
-            background: linear-gradient(90deg, #0064ff, #7828b4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
+        h1 { font-size: 24px; font-weight: 900; margin-bottom: 5px; background: linear-gradient(90deg, #0064ff, #7828b4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         p.subtitle { color: #8892b0; font-size: 14px; margin-bottom: 30px; }
 
-        .lang-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .lang-btn {
-            background: none; border: none; color: #5c678a;
-            font-weight: 700; cursor: pointer; transition: 0.3s;
-            font-size: 12px;
-        }
-
-        .lang-btn.active, .lang-btn:hover { color: #0064ff; text-shadow: 0 0 10px #0064ff; }
-
-        .btn {
-            width: 100%; padding: 15px; margin: 10px 0;
-            border: none; border-radius: 10px;
-            font-weight: 700; font-size: 14px;
-            cursor: pointer; transition: 0.3s;
-            color: white; text-transform: uppercase;
-        }
-
+        .btn { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; color: white; text-transform: uppercase; }
         .btn-user { background: #0064ff; box-shadow: 0 5px 15px rgba(0, 100, 255, 0.3); }
-        .btn-user:hover { background: #004dcc; box-shadow: 0 5px 25px rgba(0, 100, 255, 0.5); transform: translateY(-2px); }
-
+        .btn-user:hover { background: #004dcc; transform: translateY(-2px); }
         .btn-admin { background: #7828b4; box-shadow: 0 5px 15px rgba(120, 40, 180, 0.3); margin-top: 5px; }
-        .btn-admin:hover { background: #5a1e87; box-shadow: 0 5px 25px rgba(120, 40, 180, 0.5); transform: translateY(-2px); }
+        .btn-admin:hover { background: #5a1e87; transform: translateY(-2px); }
 
-        .input-group { margin-top: 20px; text-align: left; }
-        
-        input[type="password"] {
-            width: 100%; padding: 15px;
-            background: rgba(10, 15, 25, 0.8);
-            border: 1px solid #2a3454; border-radius: 10px;
-            color: #fff; margin-bottom: 10px; font-size: 14px;
-            outline: none; transition: 0.3s;
+        input[type="password"], input[type="text"] {
+            width: 100%; padding: 15px; background: rgba(10, 15, 25, 0.8);
+            border: 1px solid #2a3454; border-radius: 10px; color: #fff;
+            margin-bottom: 10px; font-size: 14px; outline: none; transition: 0.3s;
         }
-
-        input[type="password"]:focus { border-color: #7828b4; box-shadow: 0 0 15px rgba(120, 40, 180, 0.3); }
-
-        textarea {
-            width: 100%; height: 120px;
-            background: #060913; border: 1px solid #1a2342;
-            border-radius: 10px; color: #00ff88;
-            padding: 15px; margin-top: 20px;
-            font-family: monospace; font-size: 13px;
-            resize: none; outline: none;
-        }
+        input:focus { border-color: #0064ff; box-shadow: 0 0 15px rgba(0, 100, 255, 0.3); }
 
         .status { margin-top: 10px; font-size: 13px; font-weight: 700; min-height: 20px; }
-        .success { color: #00ff88; }
-        .error { color: #ff3366; }
+        .success { color: #00ff88; } .error { color: #ff3366; } .wait { color: #0064ff; }
+
+        .settings-block { margin-top: 30px; padding-top: 20px; border-top: 1px solid #2a3454; text-align: left; }
+        .settings-block h3 { font-size: 14px; color: #8892b0; margin-bottom: 10px; text-transform: uppercase; }
+        .btn-save { background: #2a3454; color: #fff; padding: 10px; margin-top: 5px; font-size: 12px; }
+        .btn-save:hover { background: #3b4870; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="lang-switch">
-            <button class="lang-btn" onclick="setLang('UKR')" id="btn-UKR">UKR</button>
-            <button class="lang-btn active" onclick="setLang('RUS')" id="btn-RUS">RUS</button>
-            <button class="lang-btn" onclick="setLang('ENG')" id="btn-ENG">ENG</button>
-        </div>
+        <h1>ILLIA V3 СИСТЕМА</h1>
+        <p class="subtitle">Авто-генератор и синхронизация</p>
 
-        <h1 id="t-title">ILLIA V3 СИСТЕМА</h1>
-        <p class="subtitle" id="t-sub">Центр генерации ключей</p>
+        <button class="btn btn-user" onclick="generateKey('user')">Сгенерировать ключ (24 часа)</button>
 
-        <button class="btn btn-user" id="t-gen-user" onclick="generateUserKey()">Сгенерировать ключ (24 часа)</button>
-
-        <div class="input-group">
-            <input type="password" id="adminPwd" placeholder="Мастер-пароль...">
-            <button class="btn btn-admin" id="t-gen-admin" onclick="generateAdminKey()">Создать АДМИН ключ</button>
+        <div style="margin-top: 20px;">
+            <input type="password" id="adminPwd" placeholder="Введи мастер-пароль...">
+            <button class="btn btn-admin" onclick="generateKey('admin')">Создать АДМИН ключ</button>
         </div>
 
         <div class="status" id="statusMsg"></div>
 
-        <textarea id="resultOutput" readonly placeholder="{ ... результат ... }"></textarea>
+        <div class="settings-block">
+            <h3>Настройки GitHub API (Только для тебя)</h3>
+            <input type="text" id="repoName" placeholder="Название репозитория (например: test-cheat)">
+            <input type="password" id="ghToken" placeholder="GitHub Token (ghp_...)">
+            <button class="btn btn-save" onclick="saveSettings()">Сохранить настройки в браузере</button>
+        </div>
     </div>
 
     <script>
         // Твой оригинальный хэш
         const MASTER_HASH = "$2b$10$cilpR5lO.eDrP8QQgqHlquz5Tr06oNMUI4kFVRtQG/KnSu8p6cF4O";
+        const GITHUB_USER = "gagarinw"; // Твой ник на GitHub
 
-        // Система переводов
-        const langs = {
-            RUS: {
-                title: "ILLIA V3 СИСТЕМА", sub: "Центр генерации ключей",
-                genUser: "Сгенерировать ключ (24 часа)", pwd: "Мастер-пароль...",
-                genAdmin: "Создать АДМИН ключ", errPwd: "❌ Неверный пароль!",
-                wait: "⏳ Проверка пароля...", success: "✅ Скопируй это в keys.json:"
-            },
-            UKR: {
-                title: "ILLIA V3 СИСТЕМА", sub: "Центр генерації ключів",
-                genUser: "Згенерувати ключ (24 години)", pwd: "Майстер-пароль...",
-                genAdmin: "Створити АДМІН ключ", errPwd: "❌ Невірний пароль!",
-                wait: "⏳ Перевірка пароля...", success: "✅ Скопіюй це у keys.json:"
-            },
-            ENG: {
-                title: "ILLIA V3 SYSTEM", sub: "Key Generation Center",
-                genUser: "Generate User Key (24 hours)", pwd: "Master Password...",
-                genAdmin: "Create ADMIN Key", errPwd: "❌ Wrong Password!",
-                wait: "⏳ Validating password...", success: "✅ Copy this to keys.json:"
-            }
-        };
+        // Загрузка настроек при открытии сайта
+        document.getElementById('repoName').value = localStorage.getItem('illia_repo') || "";
+        document.getElementById('ghToken').value = localStorage.getItem('illia_token') || "";
 
-        let currentLang = 'RUS';
-
-        function setLang(lang) {
-            currentLang = lang;
-            document.getElementById('t-title').innerText = langs[lang].title;
-            document.getElementById('t-sub').innerText = langs[lang].sub;
-            document.getElementById('t-gen-user').innerText = langs[lang].genUser;
-            document.getElementById('adminPwd').placeholder = langs[lang].pwd;
-            document.getElementById('t-gen-admin').innerText = langs[lang].genAdmin;
-            
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + lang).classList.add('active');
-            
-            document.getElementById('statusMsg').innerText = "";
+        function saveSettings() {
+            localStorage.setItem('illia_repo', document.getElementById('repoName').value.trim());
+            localStorage.setItem('illia_token', document.getElementById('ghToken').value.trim());
+            alert("Настройки сохранены в этом браузере!");
         }
 
-        // Генератор случайной строки
+        function setStatus(msg, type) {
+            const el = document.getElementById('statusMsg');
+            el.innerText = msg;
+            el.className = "status " + type;
+        }
+
         function makeStr(length) {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
-            return result;
+            let res = '';
+            for (let i = 0; i < length; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+            return res;
         }
 
-        // Вывод результата
-        function showResult(jsonObj, msg, isError = false) {
-            const status = document.getElementById('statusMsg');
-            const output = document.getElementById('resultOutput');
-            
-            status.innerText = msg;
-            status.className = "status " + (isError ? "error" : "success");
-            
-            if (jsonObj) {
-                const text = JSON.stringify(jsonObj, null, 4);
-                output.value = text;
-                // Автоматически копируем в буфер обмена
-                navigator.clipboard.writeText(text);
-                status.innerText += " (Скопировано в буфер!)";
-            } else {
-                output.value = "";
+        async function generateKey(type) {
+            const repo = localStorage.getItem('illia_repo');
+            const token = localStorage.getItem('illia_token');
+
+            if (!repo || !token) {
+                setStatus("❌ Ошибка: Укажи токен и название репозитория в настройках ниже!", "error");
+                return;
+            }
+
+            let newKeyData = {};
+
+            if (type === 'user') {
+                const key = "USER_" + makeStr(15);
+                newKeyData[key] = { type: "valid", expiry: Math.floor(Date.now() / 1000) + 86400 };
+            } else if (type === 'admin') {
+                const pwd = document.getElementById('adminPwd').value;
+                if (!pwd) return setStatus("❌ Введи пароль!", "error");
+                
+                setStatus("⏳ Проверка пароля...", "wait");
+                
+                // Проверка через bcrypt с задержкой для UI
+                const isMatch = await new Promise(resolve => setTimeout(() => resolve(dcodeIO.bcrypt.compareSync(pwd, MASTER_HASH)), 100));
+                
+                if (!isMatch) return setStatus("❌ Неверный пароль!", "error");
+                
+                const key = "ADMIN_" + makeStr(15);
+                newKeyData[key] = { type: "admin" };
+                document.getElementById('adminPwd').value = ""; // очищаем поле
+            }
+
+            // Отправляем на GitHub
+            pushToGitHub(newKeyData, token, repo);
+        }
+
+        async function pushToGitHub(newData, token, repo) {
+            setStatus("⏳ Отправка ключа на GitHub...", "wait");
+            const url = `https://api.github.com/repos/${GITHUB_USER}/${repo}/contents/keys.json`;
+
+            try {
+                // 1. Получаем текущий файл
+                let getRes = await fetch(url, { headers: { Authorization: `token ${token}` } });
+                
+                let currentKeys = {};
+                let sha = "";
+
+                if (getRes.ok) {
+                    let fileData = await getRes.json();
+                    sha = fileData.sha; // Обязательный параметр для обновления файла
+                    currentKeys = JSON.parse(atob(fileData.content)); // Расшифровываем текущие ключи
+                }
+
+                // 2. Добавляем новый ключ в базу
+                Object.assign(currentKeys, newData);
+
+                // 3. Загружаем обновленный файл обратно
+                let putRes = await fetch(url, {
+                    method: "PUT",
+                    headers: { 
+                        Authorization: `token ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: "Auto-add key via Web Panel",
+                        content: btoa(JSON.stringify(currentKeys, null, 4)),
+                        sha: sha || undefined
+                    })
+                });
+
+                if (putRes.ok) {
+                    const keyName = Object.keys(newData)[0];
+                    navigator.clipboard.writeText(keyName);
+                    setStatus(`✅ Успешно! Ключ ${keyName} добавлен на GitHub и скопирован в буфер обмена!`, "success");
+                } else {
+                    let err = await putRes.json();
+                    setStatus(`❌ Ошибка GitHub: ${err.message}`, "error");
+                }
+
+            } catch (error) {
+                setStatus("❌ Ошибка соединения с GitHub", "error");
+                console.error(error);
             }
         }
-
-        function generateUserKey() {
-            const key = "USER_" + makeStr(15);
-            const expiry = Math.floor(Date.now() / 1000) + 86400; // + 24 часа
-            const data = {};
-            data[key] = { type: "valid", expiry: expiry };
-            showResult(data, langs[currentLang].success);
-        }
-
-        function generateAdminKey() {
-            const pwd = document.getElementById('adminPwd').value;
-            if (!pwd) return;
-
-            const status = document.getElementById('statusMsg');
-            status.innerText = langs[currentLang].wait;
-            status.className = "status";
-
-            // Небольшая задержка, чтобы UI успел обновиться перед тяжелой проверкой
-            setTimeout(() => {
-                const bcrypt = dcodeIO.bcrypt;
-                const isMatch = bcrypt.compareSync(pwd, MASTER_HASH);
-
-                if (isMatch) {
-                    const key = "ADMIN_" + makeStr(15);
-                    const data = {};
-                    data[key] = { type: "admin" };
-                    showResult(data, langs[currentLang].success);
-                    document.getElementById('adminPwd').value = ""; // Очищаем пароль
-                } else {
-                    showResult(null, langs[currentLang].errPwd, true);
-                }
-            }, 100);
-        }
-
-        // Устанавливаем язык по умолчанию при загрузке
-        setLang('RUS');
     </script>
 </body>
 </html>
