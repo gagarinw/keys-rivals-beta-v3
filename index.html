@@ -35,7 +35,7 @@
         .btn-admin { background: #7828b4; box-shadow: 0 5px 15px rgba(120, 40, 180, 0.3); margin-top: 5px; }
         .btn-admin:hover { background: #5a1e87; transform: translateY(-2px); }
 
-        input[type="password"], input[type="text"] {
+        input[type="password"] {
             width: 100%; padding: 15px; background: rgba(10, 15, 25, 0.8);
             border: 1px solid #2a3454; border-radius: 10px; color: #fff;
             margin-bottom: 10px; font-size: 14px; outline: none; transition: 0.3s;
@@ -44,11 +44,6 @@
 
         .status { margin-top: 10px; font-size: 13px; font-weight: 700; min-height: 20px; }
         .success { color: #00ff88; } .error { color: #ff3366; } .wait { color: #0064ff; }
-
-        .settings-block { margin-top: 30px; padding-top: 20px; border-top: 1px solid #2a3454; text-align: left; }
-        .settings-block h3 { font-size: 14px; color: #8892b0; margin-bottom: 10px; text-transform: uppercase; }
-        .btn-save { background: #2a3454; color: #fff; padding: 10px; margin-top: 5px; font-size: 12px; }
-        .btn-save:hover { background: #3b4870; }
     </style>
 </head>
 <body>
@@ -65,29 +60,17 @@
         </div>
 
         <div class="status" id="statusMsg"></div>
-
-        <div class="settings-block">
-            <h3>Настройки GitHub API (Только для тебя)</h3>
-            <input type="text" id="repoName" placeholder="Название репозитория (например: test-cheat)">
-            <input type="password" id="ghToken" placeholder="GitHub Token (ghp_...)">
-            <button class="btn btn-save" onclick="saveSettings()">Сохранить настройки в браузере</button>
-        </div>
     </div>
 
     <script>
-        // Твой оригинальный хэш
+        // --- ТВОИ ДАННЫЕ ДЛЯ GITHUB ---
         const MASTER_HASH = "$2b$10$cilpR5lO.eDrP8QQgqHlquz5Tr06oNMUI4kFVRtQG/KnSu8p6cF4O";
-        const GITHUB_USER = "gagarinw"; // Твой ник на GitHub
-
-        // Загрузка настроек при открытии сайта
-        document.getElementById('repoName').value = localStorage.getItem('illia_repo') || "";
-        document.getElementById('ghToken').value = localStorage.getItem('illia_token') || "";
-
-        function saveSettings() {
-            localStorage.setItem('illia_repo', document.getElementById('repoName').value.trim());
-            localStorage.setItem('illia_token', document.getElementById('ghToken').value.trim());
-            alert("Настройки сохранены в этом браузере!");
-        }
+        const GITHUB_USER = "gagarinw"; 
+        
+        // ВСТАВЬ СЮДА НАЗВАНИЕ РЕПОЗИТОРИЯ И ТОКЕН:
+        const REPO_NAME = "НАЗВАНИЕ_ТВОЕГО_РЕПОЗИТОРИЯ"; 
+        const GITHUB_TOKEN = "ТВОЙ_ТОКЕН_ghp_...";
+        // ------------------------------
 
         function setStatus(msg, type) {
             const el = document.getElementById('statusMsg');
@@ -103,11 +86,8 @@
         }
 
         async function generateKey(type) {
-            const repo = localStorage.getItem('illia_repo');
-            const token = localStorage.getItem('illia_token');
-
-            if (!repo || !token) {
-                setStatus("❌ Ошибка: Укажи токен и название репозитория в настройках ниже!", "error");
+            if (!REPO_NAME || REPO_NAME === "НАЗВАНИЕ_ТВОЕГО_РЕПОЗИТОРИЯ" || !GITHUB_TOKEN || GITHUB_TOKEN.includes("ТВОЙ_ТОКЕН")) {
+                setStatus("❌ Ошибка: Укажи токен и репозиторий в коде (строки 57-58)!", "error");
                 return;
             }
 
@@ -122,18 +102,16 @@
                 
                 setStatus("⏳ Проверка пароля...", "wait");
                 
-                // Проверка через bcrypt с задержкой для UI
                 const isMatch = await new Promise(resolve => setTimeout(() => resolve(dcodeIO.bcrypt.compareSync(pwd, MASTER_HASH)), 100));
                 
                 if (!isMatch) return setStatus("❌ Неверный пароль!", "error");
                 
                 const key = "ADMIN_" + makeStr(15);
                 newKeyData[key] = { type: "admin" };
-                document.getElementById('adminPwd').value = ""; // очищаем поле
+                document.getElementById('adminPwd').value = ""; 
             }
 
-            // Отправляем на GitHub
-            pushToGitHub(newKeyData, token, repo);
+            pushToGitHub(newKeyData, GITHUB_TOKEN, REPO_NAME);
         }
 
         async function pushToGitHub(newData, token, repo) {
@@ -141,7 +119,6 @@
             const url = `https://api.github.com/repos/${GITHUB_USER}/${repo}/contents/keys.json`;
 
             try {
-                // 1. Получаем текущий файл
                 let getRes = await fetch(url, { headers: { Authorization: `token ${token}` } });
                 
                 let currentKeys = {};
@@ -149,14 +126,12 @@
 
                 if (getRes.ok) {
                     let fileData = await getRes.json();
-                    sha = fileData.sha; // Обязательный параметр для обновления файла
-                    currentKeys = JSON.parse(atob(fileData.content)); // Расшифровываем текущие ключи
+                    sha = fileData.sha; 
+                    currentKeys = JSON.parse(atob(fileData.content)); 
                 }
 
-                // 2. Добавляем новый ключ в базу
                 Object.assign(currentKeys, newData);
 
-                // 3. Загружаем обновленный файл обратно
                 let putRes = await fetch(url, {
                     method: "PUT",
                     headers: { 
@@ -173,7 +148,7 @@
                 if (putRes.ok) {
                     const keyName = Object.keys(newData)[0];
                     navigator.clipboard.writeText(keyName);
-                    setStatus(`✅ Успешно! Ключ ${keyName} добавлен на GitHub и скопирован в буфер обмена!`, "success");
+                    setStatus(`✅ Успешно! Ключ ${keyName} добавлен на GitHub и скопирован в буфер!`, "success");
                 } else {
                     let err = await putRes.json();
                     setStatus(`❌ Ошибка GitHub: ${err.message}`, "error");
