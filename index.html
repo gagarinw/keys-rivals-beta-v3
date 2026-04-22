@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ILLIA V3 | Web Generator</title>
+    <title>ILLIA V3 | Universal Panel</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
         
         body {
@@ -23,141 +22,143 @@
             border: 1px solid rgba(0, 100, 255, 0.3); border-radius: 20px;
             padding: 40px; width: 100%; max-width: 500px;
             box-shadow: 0 0 40px rgba(0, 100, 255, 0.15);
-            text-align: center; position: relative;
+            text-align: center;
         }
 
-        h1 { font-size: 24px; font-weight: 900; margin-bottom: 5px; background: linear-gradient(90deg, #0064ff, #7828b4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 { font-size: 26px; font-weight: 900; margin-bottom: 5px; background: linear-gradient(90deg, #0064ff, #7828b4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         p.subtitle { color: #8892b0; font-size: 14px; margin-bottom: 30px; }
 
-        .btn { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; color: white; text-transform: uppercase; }
+        .btn { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; color: white; text-transform: uppercase; }
         .btn-user { background: #0064ff; box-shadow: 0 5px 15px rgba(0, 100, 255, 0.3); }
-        .btn-user:hover { background: #004dcc; transform: translateY(-2px); }
-        .btn-admin { background: #7828b4; box-shadow: 0 5px 15px rgba(120, 40, 180, 0.3); margin-top: 5px; }
-        .btn-admin:hover { background: #5a1e87; transform: translateY(-2px); }
-
-        input[type="password"] {
+        .btn-admin { background: #7828b4; box-shadow: 0 5px 15px rgba(120, 40, 180, 0.3); }
+        
+        input {
             width: 100%; padding: 15px; background: rgba(10, 15, 25, 0.8);
             border: 1px solid #2a3454; border-radius: 10px; color: #fff;
-            margin-bottom: 10px; font-size: 14px; outline: none; transition: 0.3s;
+            margin-bottom: 10px; outline: none; transition: 0.3s;
         }
-        input:focus { border-color: #0064ff; box-shadow: 0 0 15px rgba(0, 100, 255, 0.3); }
+        input:focus { border-color: #0064ff; }
 
-        .status { margin-top: 10px; font-size: 13px; font-weight: 700; min-height: 20px; }
+        .status { margin-top: 15px; font-size: 13px; font-weight: 700; min-height: 20px; }
         .success { color: #00ff88; } .error { color: #ff3366; } .wait { color: #0064ff; }
+
+        .setup-section {
+            margin-top: 30px; padding-top: 20px; border-top: 1px solid #2a3454;
+            text-align: left; display: none;
+        }
+        .setup-toggle { color: #4e5a7e; font-size: 11px; cursor: pointer; text-decoration: underline; margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>ILLIA V3 СИСТЕМА</h1>
-        <p class="subtitle">Авто-генератор и синхронизация</p>
+        <h1>ILLIA V3</h1>
+        <p class="subtitle">Универсальный Генератор</p>
 
-        <button class="btn btn-user" onclick="generateKey('user')">Сгенерировать ключ (24 часа)</button>
-
+        <button class="btn btn-user" onclick="generateKey('user')">Ключ пользователя (24ч)</button>
+        
         <div style="margin-top: 20px;">
-            <input type="password" id="adminPwd" placeholder="Введи мастер-пароль...">
-            <button class="btn btn-admin" onclick="generateKey('admin')">Создать АДМИН ключ</button>
+            <input type="password" id="adminPwd" placeholder="Мастер-пароль админа">
+            <button class="btn btn-admin" onclick="generateKey('admin')">Создать АДМИН-КЛЮЧ</button>
         </div>
 
         <div class="status" id="statusMsg"></div>
+
+        <div class="setup-toggle" onclick="toggleSetup()">Настройки подключения (GitHub)</div>
+        
+        <div id="setupSection" class="setup-section">
+            <input type="text" id="repoInp" placeholder="Репозиторий (напр: keys-rivals)">
+            <input type="password" id="tokenInp" placeholder="Токен (ghp_...)">
+            <button class="btn" style="background: #2a3454; font-size: 12px;" onclick="saveSetup()">Сохранить настройки</button>
+        </div>
     </div>
 
     <script>
-        // --- ТВОИ ДАННЫЕ ---
         const MASTER_HASH = "$2b$10$cilpR5lO.eDrP8QQgqHlquz5Tr06oNMUI4kFVRtQG/KnSu8p6cF4O";
-        const GITHUB_USER = "gagarinw"; 
-        
-        // !!! ВАЖНО: УДАЛИ РУССКИЙ ТЕКСТ И ВСТАВЬ СВОИ ДАННЫЕ МЕЖДУ КАВЫЧЕК !!!
-        const REPO_NAME = "ILLIAV3"; 
-        const GITHUB_TOKEN = "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";
-        // ------------------------------
+        const GITHUB_USER = "gagarinw";
+
+        // Загрузка настроек из памяти браузера
+        document.getElementById('repoInp').value = localStorage.getItem('illia_repo') || "";
+        document.getElementById('tokenInp').value = localStorage.getItem('illia_token') || "";
+
+        function toggleSetup() {
+            const s = document.getElementById('setupSection');
+            s.style.display = s.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function saveSetup() {
+            localStorage.setItem('illia_repo', document.getElementById('repoInp').value.trim());
+            localStorage.setItem('illia_token', document.getElementById('tokenInp').value.trim());
+            alert("Настройки сохранены! GitHub их не увидит.");
+            toggleSetup();
+        }
 
         function setStatus(msg, type) {
             const el = document.getElementById('statusMsg');
-            el.innerText = msg;
-            el.className = "status " + type;
-        }
-
-        function makeStr(length) {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let res = '';
-            for (let i = 0; i < length; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
-            return res;
+            el.innerText = msg; el.className = "status " + type;
         }
 
         async function generateKey(type) {
-            if (!REPO_NAME || REPO_NAME.includes("ВСТАВЬ_СЮДА") || !GITHUB_TOKEN || GITHUB_TOKEN.includes("ВСТАВЬ_СЮДА")) {
-                setStatus("❌ Ошибка: Ты забыл вписать свой токен и репозиторий в код (строки 57-58)!", "error");
+            const repo = localStorage.getItem('illia_repo');
+            const token = localStorage.getItem('illia_token');
+
+            if (!repo || !token) {
+                setStatus("❌ Ошибка: Сначала введи настройки подключения ниже!", "error");
+                document.getElementById('setupSection').style.display = 'block';
                 return;
             }
 
             let newKeyData = {};
+            const keyName = (type === 'user' ? "USER_" : "ADMIN_") + Math.random().toString(36).substring(2, 10).toUpperCase();
 
-            if (type === 'user') {
-                const key = "USER_" + makeStr(15);
-                newKeyData[key] = { type: "valid", expiry: Math.floor(Date.now() / 1000) + 86400 };
-            } else if (type === 'admin') {
+            if (type === 'admin') {
                 const pwd = document.getElementById('adminPwd').value;
                 if (!pwd) return setStatus("❌ Введи пароль!", "error");
-                
                 setStatus("⏳ Проверка пароля...", "wait");
-                
-                const isMatch = await new Promise(resolve => setTimeout(() => resolve(dcodeIO.bcrypt.compareSync(pwd, MASTER_HASH)), 100));
-                
+                const isMatch = await new Promise(r => setTimeout(() => r(dcodeIO.bcrypt.compareSync(pwd, MASTER_HASH)), 100));
                 if (!isMatch) return setStatus("❌ Неверный пароль!", "error");
-                
-                const key = "ADMIN_" + makeStr(15);
-                newKeyData[key] = { type: "admin" };
-                document.getElementById('adminPwd').value = ""; 
+                newKeyData[keyName] = { type: "admin" };
+            } else {
+                newKeyData[keyName] = { type: "valid", expiry: Math.floor(Date.now() / 1000) + 86400 };
             }
 
-            pushToGitHub(newKeyData, GITHUB_TOKEN, REPO_NAME);
+            pushToGitHub(newKeyData, token, repo, keyName);
         }
 
-        async function pushToGitHub(newData, token, repo) {
-            setStatus("⏳ Отправка ключа на GitHub...", "wait");
+        async function pushToGitHub(newData, token, repo, keyName) {
+            setStatus("⏳ Отправка на GitHub...", "wait");
             const url = `https://api.github.com/repos/${GITHUB_USER}/${repo}/contents/keys.json`;
 
             try {
                 let getRes = await fetch(url, { headers: { Authorization: `token ${token}` } });
-                
-                let currentKeys = {};
-                let sha = "";
+                let currentKeys = {}, sha = "";
 
                 if (getRes.ok) {
                     let fileData = await getRes.json();
-                    sha = fileData.sha; 
-                    currentKeys = JSON.parse(atob(fileData.content)); 
+                    sha = fileData.sha;
+                    currentKeys = JSON.parse(atob(fileData.content));
                 }
 
                 Object.assign(currentKeys, newData);
 
                 let putRes = await fetch(url, {
                     method: "PUT",
-                    headers: { 
-                        Authorization: `token ${token}`,
-                        "Content-Type": "application/json"
-                    },
+                    headers: { Authorization: `token ${token}`, "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        message: "Auto-add key via Web Panel",
+                        message: "Add key: " + keyName,
                         content: btoa(JSON.stringify(currentKeys, null, 4)),
                         sha: sha || undefined
                     })
                 });
 
                 if (putRes.ok) {
-                    const keyName = Object.keys(newData)[0];
                     navigator.clipboard.writeText(keyName);
-                    setStatus(`✅ Успешно! Ключ ${keyName} добавлен на GitHub и скопирован в буфер!`, "success");
+                    setStatus(`✅ Ключ ${keyName} добавлен и скопирован!`, "success");
                 } else {
-                    let err = await putRes.json();
-                    setStatus(`❌ Ошибка GitHub: ${err.message}`, "error");
+                    const err = await putRes.json();
+                    setStatus("❌ GitHub отклонил: " + err.message, "error");
                 }
-
-            } catch (error) {
-                setStatus("❌ Ошибка соединения с GitHub", "error");
-                console.error(error);
-            }
+            } catch (e) { setStatus("❌ Ошибка соединения", "error"); }
         }
     </script>
 </body>
